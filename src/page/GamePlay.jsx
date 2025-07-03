@@ -65,6 +65,7 @@ function GamePlay() {
         clearInterval(timerIntervalId.current)
         setIsWin(true)
         setCurrentPointIndex(0)
+        setIsAutoPlay(false)
       }
     } else {
       setIsError(true)
@@ -115,9 +116,14 @@ function GamePlay() {
   useEffect(() => {
     let id
     let number = currentPointIndex
-    if(isAutoPlay){
+    if(isAutoPlay && currentPointIndex < totalPoints){
       const buttons = gameAreaRef.current.querySelectorAll("button")
       id = setInterval(() => {
+        if(number >= totalPoints) {
+          clearInterval(id)
+          setIsAutoPlay(false)
+          return
+        }
         buttons.forEach((item) => {
           if(number + 1 === Number(item.value)){
             item.click()
@@ -131,7 +137,7 @@ function GamePlay() {
     return () => {
       clearInterval(id)
     }
-  }, [isAutoPlay, currentPointIndex])
+  }, [isAutoPlay, currentPointIndex, totalPoints])
 
   return (
     <div className="container">
